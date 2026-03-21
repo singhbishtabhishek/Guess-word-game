@@ -7,10 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1></h1>
-    <div id="game-grid"></div>
-    <div id="keyboard"></div>
-    <p id="message"></p>
+    <main id="game-wrap">
+        <div id="game-grid"></div>
+        <div id="keyboard"></div>
+        <p id="message"></p>
+    </main>
+    <div id="popup" class="hidden" role="alertdialog" aria-live="assertive">
+        <div id="popup-card">
+            <p id="popup-text"></p>
+            <button id="popup-close" type="button">OK</button>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
