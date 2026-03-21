@@ -8,6 +8,12 @@
 </head>
 <body>
     <main id="game-wrap">
+        <button id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch theme">
+            <span class="theme-icon sun" aria-hidden="true">☀</span>
+            <span class="theme-icon moon" aria-hidden="true">🌙</span>
+            <span class="theme-thumb" aria-hidden="true"></span>
+        </button>
+        <p id="word-length-label"></p>
         <div id="game-grid"></div>
         <div id="keyboard"></div>
         <p id="message"></p>
@@ -16,6 +22,7 @@
         <div id="popup-card">
             <p id="popup-text"></p>
             <button id="popup-close" type="button">OK</button>
+            <button id="popup-replay" type="button">Play Again</button>
         </div>
     </div>
     <script src="script.js"></script>

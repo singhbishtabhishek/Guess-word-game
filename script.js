@@ -12,8 +12,9 @@ let lastKey = null;
 let isSubmitting = false;
 const validityCache = new Map();
 const keyStates = new Map();
-const definitionCache = new Map();
+const themeStorageKey = 'wordgame-theme';
 
+applyStoredTheme();
 initializeGame();
 
 async function initializeGame() {
@@ -32,6 +33,7 @@ async function initializeGame() {
 
         answerWord = await pickDictionaryAnswer();
         currentWordLength = answerWord.length;
+        setWordLengthLabel(currentWordLength);
 
         attempts = 0;
         gameOver = false;
@@ -40,7 +42,7 @@ async function initializeGame() {
 
         createGrid();
         createKeyboard();
-        
+        setMessage('');
         
     } catch {
         showPopup('Could not load online vocabulary. Check internet and refresh.');
@@ -191,12 +193,11 @@ async function submitGuess() {
         const cells = document.querySelectorAll('.cell');
         const guessArray = guessWord.split('');
         const answerArray = answerWord.split('');
+        const letterStates = new Array(currentWordLength).fill('gray');
 
         guessArray.forEach((letter, i) => {
-            const cell = cells[attempts * currentWordLength + i];
-            cell.textContent = letter;
             if (letter === answerArray[i]) {
-                cell.classList.add('green');
+                letterStates[i] = 'green';
                 updateKeyboardLetterState(letter, 'green');
                 answerArray[i] = null;
                 guessArray[i] = null;
@@ -205,27 +206,32 @@ async function submitGuess() {
 
         guessArray.forEach((letter, i) => {
             if (letter === null) return;
-            const cell = cells[attempts * currentWordLength + i];
             if (answerArray.includes(letter)) {
-                cell.classList.add('yellow');
+                letterStates[i] = 'yellow';
                 updateKeyboardLetterState(letter, 'yellow');
                 answerArray[answerArray.indexOf(letter)] = null;
             } else {
-                cell.classList.add('gray');
+                letterStates[i] = 'gray';
                 updateKeyboardLetterState(letter, 'gray');
             }
         });
 
+        for (let i = 0; i < currentWordLength; i++) {
+            const cell = cells[attempts * currentWordLength + i];
+            cell.textContent = guessWord[i];
+            animateCellReveal(cell, letterStates[i], i * 110);
+        }
+
         if (guessWord === answerWord) {
             gameOver = true;
-            await showGameEndMessage(true);
+            showGameEndMessage(true);
             return;
         }
 
         attempts += 1;
         if (attempts >= maxAttempts) {
             gameOver = true;
-            await showGameEndMessage(false);
+            showGameEndMessage(false);
             return;
         }
 
@@ -287,55 +293,51 @@ async function isDictionaryWord(word) {
     }
 }
 
-async function getWordDefinition(word) {
-    if (definitionCache.has(word)) {
-        return definitionCache.get(word);
-    }
-
-    let definition = 'Definition not found.';
-
-    try {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        if (response.ok) {
-            const data = await response.json();
-            const extracted = data?.[0]?.meanings?.[0]?.definitions?.[0]?.definition;
-            if (typeof extracted === 'string' && extracted.trim()) {
-                definition = extracted.trim();
-            }
-        }
-    } catch {
-        definition = 'Definition not found.';
-    }
-
-    definitionCache.set(word, definition);
-    return definition;
-}
-
-async function showGameEndMessage(isWin) {
-    const definition = await getWordDefinition(answerWord);
+function showGameEndMessage(isWin) {
     const resultText = isWin ? 'Correct!' : 'Incorrect.';
-    if (definition === 'Definition not found.') {
-        showPopup(`${resultText}\nWord: ${answerWord.toUpperCase()}\nNo meaning found.`, true);
-    } else {
-        showPopup(`${resultText}\nWord: ${answerWord.toUpperCase()}\nMeaning: ${definition}`, true);
-    }
+    showPopup(`${resultText}\nWord: ${answerWord.toUpperCase()}`, true, true);
 }
 
 function setMessage(text) {
     document.getElementById('message').textContent = text;
 }
 
-function showPopup(text, sticky = false) {
+function setWordLengthLabel(length) {
+    const label = document.getElementById('word-length-label');
+    if (!label) return;
+    label.textContent = `${length}-letter word`;
+}
+
+function animateCellReveal(cell, stateClass, delayMs) {
+    setTimeout(() => {
+        cell.classList.remove('flip-reveal');
+        cell.classList.remove('green', 'yellow', 'gray');
+        void cell.offsetWidth;
+        cell.classList.add('flip-reveal');
+
+        setTimeout(() => {
+            cell.classList.add(stateClass);
+        }, 180);
+    }, delayMs);
+}
+
+function showPopup(text, sticky = false, showReplay = false) {
     const popup = document.getElementById('popup');
+    const popupCard = document.getElementById('popup-card');
     const popupText = document.getElementById('popup-text');
     const closeBtn = document.getElementById('popup-close');
-    if (!popup || !popupText || !closeBtn) return;
+    const replayBtn = document.getElementById('popup-replay');
+    if (!popup || !popupCard || !popupText || !closeBtn || !replayBtn) return;
 
     popupText.textContent = text;
+    popupCard.classList.remove('popup-flip');
+    void popupCard.offsetWidth;
+    popupCard.classList.add('popup-flip');
     popup.classList.remove('hidden');
+    replayBtn.style.display = showReplay ? 'inline-block' : 'none';
 
     if (sticky) {
-        closeBtn.style.display = 'inline-block';
+        closeBtn.style.display = showReplay ? 'none' : 'inline-block';
         return;
     }
 
@@ -352,6 +354,27 @@ function hidePopup() {
     const popup = document.getElementById('popup');
     if (!popup) return;
     popup.classList.add('hidden');
+}
+
+function applyStoredTheme() {
+    const stored = localStorage.getItem(themeStorageKey);
+    const isDark = stored === 'dark';
+    document.body.classList.toggle('dark', isDark);
+    updateThemeButtonLabel(isDark);
+}
+
+function toggleTheme() {
+    const isDarkNow = document.body.classList.toggle('dark');
+    localStorage.setItem(themeStorageKey, isDarkNow ? 'dark' : 'light');
+    updateThemeButtonLabel(isDarkNow);
+}
+
+function updateThemeButtonLabel(isDark) {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    const next = isDark ? 'light' : 'dark';
+    btn.setAttribute('aria-label', `Switch to ${next} mode`);
+    btn.setAttribute('title', `Switch to ${next} mode`);
 }
 
 function highlightKey(char) {
@@ -388,4 +411,9 @@ document.addEventListener('keyup', () => {
 });
 
 document.getElementById('popup-close')?.addEventListener('click', hidePopup);
+document.getElementById('popup-replay')?.addEventListener('click', () => {
+    hidePopup();
+    initializeGame();
+});
+document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 

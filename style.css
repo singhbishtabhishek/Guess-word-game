@@ -1,13 +1,89 @@
+:root {
+    --bg: #f0f0f0;
+    --text: #111111;
+    --tile-border: #999;
+    --key-bg: #dddddd;
+    --key-pressed: #bbbbbb;
+    --popup-overlay: rgba(0, 0, 0, 0.35);
+    --popup-bg: #ffffff;
+}
+
+body.dark {
+    --bg: #111827;
+    --text: #f3f4f6;
+    --tile-border: #4b5563;
+    --key-bg: #374151;
+    --key-pressed: #4b5563;
+    --popup-overlay: rgba(0, 0, 0, 0.6);
+    --popup-bg: #1f2937;
+}
+
 body {
     font-family: sans-serif;
     text-align: center;
-    background-color: #f0f0f0;
+    background-color: var(--bg);
+    color: var(--text);
 }
 
 #game-wrap {
     width: max-content;
     max-width: calc(100% - 24px);
     margin: 18px auto 0;
+}
+
+#theme-toggle {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 1100;
+    border: 0;
+    width: 72px;
+    height: 38px;
+    border-radius: 999px;
+    padding: 0;
+    cursor: pointer;
+    background: #cbd5e1;
+    transition: background-color 220ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+}
+
+body.dark #theme-toggle {
+    background: #1d4ed8;
+}
+
+#theme-toggle .theme-icon {
+    width: 50%;
+    font-size: 16px;
+    line-height: 1;
+    text-align: center;
+    user-select: none;
+    opacity: 0.85;
+    z-index: 1;
+}
+
+#theme-toggle .theme-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+    transition: transform 220ms cubic-bezier(0.22, 0.8, 0.34, 1);
+}
+
+body.dark #theme-toggle .theme-thumb {
+    transform: translateX(34px);
+}
+
+#word-length-label {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 h1 {
@@ -25,12 +101,16 @@ h1 {
 .cell {
     width: 58px;
     height: 58px;
-    border: 2px solid #999;
+    border: 2px solid var(--tile-border);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 27px;
     text-transform: uppercase;
+}
+
+.cell.flip-reveal {
+    animation: tileFlip 420ms ease;
 }
 
 .green { background-color: #6aaa64; color: white; }
@@ -52,13 +132,14 @@ h1 {
     min-width: 38px;
     font-size: 16px;
     font-weight: 700;
-    background-color: #ddd;
+    background-color: var(--key-bg);
+    color: var(--text);
     cursor: pointer;
     user-select: none;
     border-radius: 6px;
 }
 .key.pressed {
-    background-color: #bbb;
+    background-color: var(--key-pressed);
 }
 
 .key.state-green {
@@ -85,7 +166,7 @@ h1 {
 #popup {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: var(--popup-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,18 +178,25 @@ h1 {
 }
 
 #popup-card {
-    width: min(460px, calc(100% - 30px));
-    background: #ffffff;
+    width: fit-content;
+    max-width: min(520px, calc(100% - 30px));
+    background: var(--popup-bg);
+    color: var(--text);
     border-radius: 12px;
-    padding: 18px;
+    padding: 10px 12px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
 }
 
 #popup-text {
-    margin: 0 0 14px;
+    margin: 0 0 8px;
     white-space: pre-line;
     font-size: 18px;
     line-height: 1.35;
+    text-align: center;
+}
+
+#popup-card.popup-flip {
+    animation: popupTextFlip 320ms ease;
 }
 
 #popup-close {
@@ -119,4 +207,39 @@ h1 {
     padding: 10px 16px;
     font-size: 16px;
     cursor: pointer;
+}
+
+#popup-replay {
+    border: 0;
+    border-radius: 8px;
+    background: #2b8a3e;
+    color: #fff;
+    padding: 10px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+    display: none;
+}
+
+@keyframes tileFlip {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50% {
+        transform: rotateX(90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
+}
+
+@keyframes popupTextFlip {
+    0% {
+        transform: rotateX(90deg);
+        opacity: 0;
+    }
+    100% {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
 }
