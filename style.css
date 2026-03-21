@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
 :root {
     --bg: #f0f0f0;
     --text: #111111;
@@ -19,10 +21,12 @@ body.dark {
 }
 
 body {
-    font-family: sans-serif;
+    font-family: "Press Start 2P", "Courier New", monospace;
     text-align: center;
     background-color: var(--bg);
     color: var(--text);
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 #game-wrap {
@@ -39,7 +43,7 @@ body {
     border: 0;
     width: 72px;
     height: 38px;
-    border-radius: 999px;
+    border-radius: 0;
     padding: 0;
     cursor: pointer;
     background: #cbd5e1;
@@ -48,6 +52,7 @@ body {
     align-items: center;
     justify-content: space-between;
     position: fixed;
+    box-shadow: 0 0 0 2px var(--text), 3px 3px 0 rgba(0, 0, 0, 0.35);
 }
 
 body.dark #theme-toggle {
@@ -56,12 +61,21 @@ body.dark #theme-toggle {
 
 #theme-toggle .theme-icon {
     width: 50%;
-    font-size: 16px;
-    line-height: 1;
-    text-align: center;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
     user-select: none;
     opacity: 0.85;
     z-index: 1;
+}
+
+#theme-toggle .theme-icon.sun {
+    background-image: url("assets/sun.png");
+}
+
+#theme-toggle .theme-icon.moon {
+    background-image: url("assets/moon.png");
 }
 
 #theme-toggle .theme-thumb {
@@ -70,10 +84,11 @@ body.dark #theme-toggle {
     left: 3px;
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: 0;
     background: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
     transition: transform 220ms cubic-bezier(0.22, 0.8, 0.34, 1);
+    border: 2px solid #000;
 }
 
 body.dark #theme-toggle .theme-thumb {
@@ -82,8 +97,9 @@ body.dark #theme-toggle .theme-thumb {
 
 #word-length-label {
     margin: 0 0 8px;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 700;
+    letter-spacing: 0.4px;
 }
 
 h1 {
@@ -105,8 +121,11 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 27px;
+    font-size: 22px;
+    font-weight: 700;
     text-transform: uppercase;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08), 2px 2px 0 rgba(0, 0, 0, 0.35);
 }
 
 .cell.flip-reveal {
@@ -130,16 +149,20 @@ h1 {
     margin: 3px;
     padding: 10px 12px;
     min-width: 38px;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 700;
     background-color: var(--key-bg);
     color: var(--text);
     cursor: pointer;
     user-select: none;
-    border-radius: 6px;
+    border-radius: 0;
+    border: 2px solid var(--text);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
 }
 .key.pressed {
     background-color: var(--key-pressed);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.28);
 }
 
 .key.state-green {
@@ -161,6 +184,25 @@ h1 {
     min-height: 24px;
     margin-top: 16px;
     white-space: pre-line;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+}
+
+#character-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 900;
+    overflow: hidden;
+}
+
+#character-layer canvas {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.45));
 }
 
 #popup {
@@ -182,17 +224,20 @@ h1 {
     max-width: min(520px, calc(100% - 30px));
     background: var(--popup-bg);
     color: var(--text);
-    border-radius: 12px;
+    border-radius: 0;
     padding: 10px 12px;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+    border: 3px solid var(--text);
+    box-shadow: 0 0 0 3px var(--bg), 8px 8px 0 rgba(0, 0, 0, 0.35);
 }
 
 #popup-text {
     margin: 0 0 8px;
     white-space: pre-line;
-    font-size: 18px;
+    font-size: 12px;
     line-height: 1.35;
     text-align: center;
+    letter-spacing: 0.3px;
 }
 
 #popup-card.popup-flip {
@@ -201,24 +246,30 @@ h1 {
 
 #popup-close {
     border: 0;
-    border-radius: 8px;
+    border-radius: 0;
     background: #1f6feb;
     color: #fff;
     padding: 10px 16px;
-    font-size: 16px;
+    font-size: 12px;
     cursor: pointer;
+    font-family: inherit;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
 }
 
 #popup-replay {
     border: 0;
-    border-radius: 8px;
+    border-radius: 0;
     background: #2b8a3e;
     color: #fff;
     padding: 10px 16px;
-    font-size: 16px;
+    font-size: 12px;
     cursor: pointer;
     margin-left: 8px;
     display: none;
+    font-family: inherit;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
 }
 
 @keyframes tileFlip {
