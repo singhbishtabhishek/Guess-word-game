@@ -64,35 +64,38 @@ body.dark #theme-toggle {
     height: 100%;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 16px 16px;
+    background-size: 78% 78%;
     user-select: none;
-    opacity: 0.85;
+    opacity: 1;
     z-index: 1;
 }
 
 #theme-toggle .theme-icon.sun {
-    background-image: url("assets/sun.png");
+    background-image: url("sun.png");
 }
 
 #theme-toggle .theme-icon.moon {
-    background-image: url("assets/moon.png");
+    background-image: url("moon.png");
+    background-size: 100% 100%;
 }
 
 #theme-toggle .theme-thumb {
     position: absolute;
-    top: 3px;
+    top: 50%;
     left: 3px;
     width: 32px;
     height: 32px;
+    box-sizing: border-box;
     border-radius: 0;
-    background: #ffffff;
+    background: #00000079;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
     transition: transform 220ms cubic-bezier(0.22, 0.8, 0.34, 1);
     border: 2px solid #000;
+    transform: translateY(-50%);
 }
 
 body.dark #theme-toggle .theme-thumb {
-    transform: translateX(34px);
+    transform: translate(34px, -50%);
 }
 
 #word-length-label {
