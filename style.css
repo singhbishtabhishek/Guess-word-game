@@ -134,7 +134,7 @@ h1 {
 
 .green { background-color: #6aaa64; color: white; }
 .yellow { background-color: #c9b458; color: white; }
-.gray { background-color: #787c7e; color: white; }
+.gray { background-color: #dc2626; color: white; }
 
 #keyboard {
     margin-top: 20px;
@@ -176,7 +176,7 @@ h1 {
 }
 
 .key.state-gray {
-    background-color: #787c7e;
+    background-color: #dc2626;
     color: white;
 }
 
