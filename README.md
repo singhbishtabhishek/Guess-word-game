@@ -28,7 +28,7 @@ https://singhbishtabhishek.github.io/Guess-word-game/
 ## Run locally
 1. Clone the repository:
      ```bash
-     https://github.com/singhbishtabhishek/Guess-word-game.git
+     git clone https://github.com/singhbishtabhishek/Guess-word-game.git
      ```
 2. Open the folder:
      ```bash
