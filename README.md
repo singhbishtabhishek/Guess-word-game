@@ -16,22 +16,22 @@ https://singhbishtabhishek.github.io/Guess-word-game/
 - The game randomly selects a valid word
 - Player gets **6 attempts** to guess it
 
-  ## APIs Used
+## APIs Used
   - https://api.datamuse.com/
   - https://dictionaryapi.dev/
  
-  ## How to Play
+## How to Play
   - Enter a valid word
   - Use color hints to improve your guess
   - guess within 6 attempts
  
-  ## Run locally
-  1. Clone the repository:
+## Run locally
+1. Clone the repository:
      ```bash
      https://github.com/singhbishtabhishek/Guess-word-game.git
      ```
-  2. Open the folder:
+2. Open the folder:
      ```bash
      cd guess-the-word
      ```
-  3. Open index.html and play
+3. Open index.html and play
